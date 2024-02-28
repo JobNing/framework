@@ -19,12 +19,14 @@ type mysqlConfig struct {
 }
 
 func InitMysql(serviceName string) error {
-
 	type Val struct {
 		Mysql mysqlConfig `yaml:"mysql"`
 	}
 	mysqlConfigVal := Val{}
 	content, err := config.GetConfig("DEFAULT_GROUP", serviceName)
+	if err != nil {
+		return err
+	}
 	err = yaml.Unmarshal([]byte(content), &mysqlConfigVal)
 	if err != nil {
 		fmt.Println("**********errr")
