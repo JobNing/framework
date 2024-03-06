@@ -20,8 +20,8 @@ type Config struct {
 	} `yaml:"app"`
 }
 
-func getConfig(serviceName string) (*Config, error) {
-	configInfo, err := config.GetConfig("DEFAULT_GROUP", serviceName)
+func getConfig(nacosGroup, serviceName string) (*Config, error) {
+	configInfo, err := config.GetConfig(nacosGroup, serviceName)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +33,8 @@ func getConfig(serviceName string) (*Config, error) {
 	return cnf, nil
 }
 
-func RegisterGRPC(serviceName string, register func(s *grpc.Server)) error {
-	cof, err := getConfig(serviceName)
+func RegisterGRPC(nacosGroup, serviceName string, register func(s *grpc.Server)) error {
+	cof, err := getConfig(nacosGroup, serviceName)
 	if err != nil {
 		return err
 	}

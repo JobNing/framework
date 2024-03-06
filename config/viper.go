@@ -1,11 +1,21 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+	"github.com/spf13/viper"
+)
 
-func ReadConfig(filePath string) {
-	viper.SetConfigFile(filePath)
-	err := viper.ReadInConfig()
-	if err != nil {
-		return
+func InitViper(fileName, filePath string) error {
+	viper.SetConfigName(fileName)
+	viper.AddConfigPath(filePath)
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			return fmt.Errorf("no such config file")
+		} else {
+			// Config file was found but another error was produced
+			return fmt.Errorf("read config error")
+		}
 	}
+	return nil
 }

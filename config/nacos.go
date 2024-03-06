@@ -6,18 +6,18 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/v2/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"strconv"
 )
-
-const ip = "127.0.0.1"
-const port = 8848
 
 var client config_client.IConfigClient
 
-func GetClient() error {
-	var err error
-
+func GetClient(ip, port string) error {
+	portInt, err := strconv.Atoi(port)
+	if err != nil {
+		return err
+	}
 	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(ip, port, constant.WithContextPath("/nacos")),
+		*constant.NewServerConfig(ip, uint64(portInt), constant.WithContextPath("/nacos")),
 	}
 
 	//create ClientConfig

@@ -5,20 +5,24 @@ import (
 	"github.com/JobNing/framework/mysql"
 )
 
-func Init(serviceName string, apps ...string) error {
-	var err error
-	err = config.GetClient()
-	if err != nil {
+func Init(
+	serviceName string,
+	nacosIP, naocsPort string,
+	apps ...string,
+) error {
+	if err := config.GetClient(nacosIP, naocsPort); err != nil {
 		return err
 	}
+
 	for _, val := range apps {
 		switch val {
 		case "mysql":
-			err = mysql.InitMysql(serviceName)
+			err := mysql.InitMysql(serviceName)
 			if err != nil {
 				panic(err)
 			}
 		}
+
 	}
-	return err
+	return nil
 }

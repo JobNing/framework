@@ -31,9 +31,6 @@ func ServiceRegister(address, port string) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(fmt.Sprintf("%v,%v", address, port))
-
 	return client.Agent().ServiceRegister(&capi.AgentServiceRegistration{
 		ID:      "test",
 		Name:    "user",
