@@ -67,10 +67,10 @@ func ServiceRegister(nacosGroup, serviceName string, address, port string) error
 		Tags:    []string{"GRPC"},
 		Port:    portInt,
 		Address: address,
-		Check: &capi.AgentServiceCheck{
-			GRPC:                           fmt.Sprintf("%v:%v", address, port),
-			Interval:                       "5s",
-			DeregisterCriticalServiceAfter: "10s",
-		},
+		//Check: &capi.AgentServiceCheck{
+		//	GRPC:                           fmt.Sprintf("%v:%v", address, port),
+		//	Interval:                       "5s",
+		//	DeregisterCriticalServiceAfter: "10s",
+		//},
 	})
 }
