@@ -3,6 +3,7 @@ package consul
 import (
 	"fmt"
 	"github.com/JobNing/framework/config"
+	"github.com/google/uuid"
 	capi "github.com/hashicorp/consul/api"
 	"gopkg.in/yaml.v2"
 	"strconv"
@@ -62,7 +63,7 @@ func ServiceRegister(nacosGroup, serviceName string, address, port string) error
 		return err
 	}
 	return client.Agent().ServiceRegister(&capi.AgentServiceRegistration{
-		ID:      "test",
+		ID:      uuid.NewString(),
 		Name:    "user",
 		Tags:    []string{"GRPC"},
 		Port:    portInt,
