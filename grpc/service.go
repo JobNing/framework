@@ -44,7 +44,7 @@ func RegisterGRPC(nacosGroup, serviceName string, register func(s *grpc.Server))
 		return err
 	}
 
-	err = consul.ServiceRegister(cof.App.Ip, cof.App.Port)
+	err = consul.ServiceRegister(nacosGroup, serviceName, cof.App.Ip, cof.App.Port)
 	if err != nil {
 		return err
 	}
