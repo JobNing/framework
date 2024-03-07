@@ -3,7 +3,9 @@ module github.com/JobNing/framework
 go 1.20
 
 require (
+	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/consul/api v1.25.1
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.5
@@ -27,6 +29,7 @@ require (
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect

@@ -1,13 +1,18 @@
 package consul
 
 import (
+	"context"
 	"fmt"
 	"github.com/JobNing/framework/config"
+	"github.com/JobNing/framework/redis"
 	"github.com/google/uuid"
 	capi "github.com/hashicorp/consul/api"
 	"gopkg.in/yaml.v2"
 	"strconv"
+	"time"
 )
+
+const CONSUL_KEY = "consul:node:index"
 
 type ConsulConfig struct {
 	Consul struct {
@@ -31,19 +36,57 @@ func getConfig(nacosGroup, serviceName string) (*ConsulConfig, error) {
 	return consulCnf, err
 }
 
-func AgentHealthService(serviceName string) (string, error) {
+func getIndex(ctx context.Context, serviceName string, indexLen int) (int, error) {
+	exist, err := redis.ExistKey(ctx, serviceName, CONSUL_KEY)
+	if err != nil {
+		return 0, err
+	}
+
+	if exist {
+		indexStr, err := redis.GetByKey(ctx, serviceName, CONSUL_KEY)
+		if err != nil {
+			return 0, err
+		}
+		index, err := strconv.Atoi(indexStr)
+		newIndex := index + 1
+
+		if newIndex >= indexLen {
+			newIndex = 0
+		}
+		err = redis.SetKey(ctx, serviceName, CONSUL_KEY, newIndex, time.Duration(0))
+		if err != nil {
+			return 0, err
+		}
+
+		return index, nil
+	}
+
+	err = redis.SetKey(ctx, serviceName, "consul:node:index", 0, time.Duration(0))
+	if err != nil {
+		return 0, err
+	}
+	return 0, nil
+}
+
+func AgentHealthService(ctx context.Context, serviceName string) (string, error) {
 	client, err := capi.NewClient(capi.DefaultConfig())
 	if err != nil {
 		return "", err
 	}
-	sr, info, err := client.Agent().AgentHealthServiceByName(serviceName)
+	sr, infos, err := client.Agent().AgentHealthServiceByName(serviceName)
 	if err != nil {
 		return "", err
 	}
 	if sr != "passing" {
 		return "", fmt.Errorf("is not have health service")
 	}
-	return fmt.Sprintf("%v:%v", info[0].Service.Address, info[0].Service.Port), nil
+
+	index, err := getIndex(ctx, serviceName, len(infos))
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%v:%v", infos[index].Service.Address, infos[index].Service.Port), nil
 }
 
 func ServiceRegister(nacosGroup, serviceName string, address, port string) error {
